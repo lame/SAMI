@@ -7,8 +7,8 @@ from flask_restful import Resource
 from app import db
 from app.adapters import MessageRequest
 from app.models import Message, User, UserState
-from app.templates.failure import failure_message
 from app.templates import service_onboarding
+from app.templates.failure import failure_message
 
 # from twilio.twiml import Response as TwiMLResponse
 
@@ -68,7 +68,7 @@ class InboundMessage(BaseMessage):
         {'template': 'welcome_2', 'model_value': 'alias', 'next': {'all': 2}},
         {'template': 'welcome_3', 'model_value': 'age', 'next': {'all': 3}},
         {'template': 'welcome_4', 'model_value': 'postal_code', 'next': {'all': 4}},
-        {'template': 'welcome_5', 'model_value': None, 'next': {'all': None}},
+        {'template': 'welcome_5', 'model_value': None, 'next': {'all': -1}},
     ]
 
     def post(self):
@@ -90,16 +90,16 @@ class InboundMessage(BaseMessage):
                 next_question_tree = self.onboarding_steps[saved_state.last_question]['next']
                 next_question = next_question_tree.get('all') or next_question_tree.get(message.body) or 0
 
-                # Set the "last" question for the next state run
-                saved_state.last_question = next_question
-
                 # Did the user complete signup?
-                if not next_question:
+                if next_question == -1:
                     user.onboarding_completed = True
 
-                # saved_state.next_question = next_question
+                # Set the "last" question for the next state run
+                saved_state.last_question = next_question
                 user.saved_state.append(saved_state)
-                response = getattr(service_onboarding, self.onboarding_steps[next_question]['template'])(**user.__dict__)
+                response = getattr(service_onboarding, self.onboarding_steps[next_question]['template'])(
+                    **user.__dict__
+                )
             else:
                 response = 'foo'
                 logger.info(
