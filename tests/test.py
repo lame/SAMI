@@ -17,7 +17,9 @@ class TwiMLTest(unittest.TestCase):
         app.config['FIXTURES_DIRS'] = [FIXTURES_DIR]
         app.config['TESTING'] = True
         app.config['WTF_CSRF_ENABLED'] = False
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(BASEDIR, 'test.db')
+        app.config['SQLALCHEMY_DATABASE_URL'] = 'sqlite:///' + os.path.join(
+            BASEDIR, 'test.db'
+        )
         db.create_all()
 
         self.test_app = app.test_client()
@@ -49,7 +51,7 @@ class TwiMLTest(unittest.TestCase):
             MessageSid=kwargs.get('MessageSid'),
             AccountSid=kwargs.get('AccountSid'),
             From=kwargs.get('From'),
-            ApiVersion=kwargs.get('ApiVersion')
+            ApiVersion=kwargs.get('ApiVersion'),
         )
 
         formatted_params = '?'
