@@ -5,7 +5,7 @@ BASEDIR = os.path.abspath(os.path.dirname(__file__))
 CSRF_ENABLED = os.environ.get('CSRF_ENABLED', True)
 DEBUG = os.environ.get('DEBUG', False)
 ENV = os.environ.get('ENV')
-SECRET_KEY = os.environ.get('SECRET_KEY', '')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'secret_key')
 
 # SQLAlchemy Config
 DATABASE_QUERY_TIMEOUT = 0.5

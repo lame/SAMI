@@ -1,0 +1,32 @@
+[
+    {
+        "id": 0,
+        "text": "Welcome dood, what's your first name or a nickname you like?",
+        "previous": [],
+        "next": {
+            "all": 1
+        },
+        "validate": false,
+        "value_type": null
+    },
+    {
+        "id": 1,
+        "text": "How old are you?",
+        "previous": [0],
+        "next": {
+            "all": 2
+        },
+        "validate": true,
+        "value_type": "int"
+    },
+    {
+        "id": 2,
+        "text": "How old are you?",
+        "previous": [1],
+        "next": {
+            "all": 3
+        },
+        "validate": true,
+        "value_type": "int"
+    }
+]

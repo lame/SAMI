@@ -1,4 +1,4 @@
-def welcome_1() -> str:
+def welcome_1(**kwargs) -> str:
     """
     Onboarding step 1:
         Welcome the user to the service, get consent
@@ -18,7 +18,7 @@ def welcome_1() -> str:
     '''
 
 
-def welcome_2() -> str:
+def welcome_2(**kwargs) -> str:
     """
     Onboarding step 2:
         Explain the service to the user, outline
@@ -37,18 +37,19 @@ def welcome_2() -> str:
     '''
 
 
-def welcome_3(fname: str) -> str:
+def welcome_3(**kwargs) -> str:
     """
     Onboarding step 3:
         Echo the name, get age
     """
     return f'''
-    Hi {fname}, we're happy you joined TextHomelessHelp! To best
-    assist you, please provide us with your current age
+    Hi {kwargs.get('alias')}, we're happy you joined
+    TextHomelessHelp! To best assist you, please
+    provide us with your current age.
     '''
 
 
-def welcome_4() -> str:
+def welcome_4(**kwargs) -> str:
     """
     Onboarding step 4:
         We have their age, let's get their location
@@ -60,7 +61,7 @@ def welcome_4() -> str:
     '''
 
 
-def welcome_5(fname: str, county: str) -> str:
+def welcome_5(**kwargs) -> str:
     """
     Onboarding step 5:
         We've now completed onboarding. Let's remind them of the
@@ -73,10 +74,10 @@ def welcome_5(fname: str, county: str) -> str:
             "mental health professional"
     """
     return f'''
-    {fname} you're all done with signup! Just as a reminder you can
-    text this number with "friend" at any time to connect with a
-    mental health professional, or "resources" to get a list of
-    nearby showers, water, electricity, shelters, and outreach in
-    your area. Text "help" if you need to retrieve the available
-    functionality of TextHomelessHelp at any time.
+    {kwargs.get('alias')} you're all done with signup! Just as a
+    reminder you can text this number with "friend" at any time
+    to connect with a mental health professional, or "resources"
+    to get a list of nearby showers, water, electricity, shelters,
+    and outreach in your area. Text "help" if you need to retrieve
+    the available functionality of TextHomelessHelp at any time.
     '''

@@ -13,8 +13,8 @@ USER_ROLE = 0
 class Base(db.Model):
     __abstract__ = True
 
-    id = db.Column(db.Integer, primary_key=True)
-    date_created = db.Column(db.DateTime, default=db.func.current_timestamp())
+    id = db.Column(db.Integer(), primary_key=True)
+    date_created = db.Column(db.DateTime(), default=db.func.current_timestamp())
     date_modified = db.Column(
         db.DateTime,
         default=db.func.current_timestamp(),
@@ -69,19 +69,21 @@ class User(Base):
     __tablename__ = 'users'
 
     alias = db.Column(db.String(35))
-    age = db.Column(db.Integer)
+    age = db.Column(db.Integer())
     phone_number = db.Column(db.String(15), unique=True)
-    active = db.Column(db.Boolean)
-    high_risk = db.Column(db.Boolean)
+    active = db.Column(db.Boolean())
+    high_risk = db.Column(db.Boolean())
+    question_context = db.Column(db.Integer())
     lat = db.Column(db.Float())
     lng = db.Column(db.Float())
+    onboarding_completed = db.Column(db.Boolean)
 
-    onboarding = db.relationship(
-        'UserOnboarding', uselist=False, backref="user_onboard"
+    saved_state = db.relationship(
+        'UserState', back_populates='user', lazy='dynamic'
     )
 
     messages = db.relationship(
-        'Message', backref='user_messages', lazy='dynamic'
+        'Message', back_populates='user', lazy='dynamic'
     )
 
     def __init__(
@@ -93,6 +95,7 @@ class User(Base):
         lng: float,
         active: bool = True,
         high_risk: bool = False,
+        onboarding_completed: bool = False,
     ):
         self.alias = alias
         self.age = age
@@ -101,6 +104,7 @@ class User(Base):
         self.lng = lng
         self.active = active
         self.high_risk = high_risk
+        self.onboarding_completed = onboarding_completed
 
     def template_message(self, message):
         return f'''
@@ -125,30 +129,15 @@ class User(Base):
                 raise
 
 
-class UserOnboarding(Base):
-    __tablename__ = 'user_onboarding'
+class UserState(Base):
+    __tablename__ = 'user_states'
 
-    completed = db.Column(db.Boolean)
-    step = db.Column(db.Integer)
-    opt_in = db.Column(db.Boolean)
+    last_question = db.Column(db.Integer)
+    next_question = db.Column(db.Integer)
+    message_body = db.Column(db.String)
 
-    user = db.Column(db.Integer, db.ForeignKey('users.id'))
-
-    def __init__(
-        self,
-        step=0,
-        completed=False,
-        opt_in=False,
-        fname=None,
-        lname=None,
-        phone=None,
-    ):
-        self.step = step
-        self.completed = False
-        self.opt_in = opt_in
-        self.fname = fname
-        self.lname = lname
-        self.phone = phone
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user = db.relationship("User", back_populates="saved_state")
 
 
 class Message(Base):
@@ -171,6 +160,7 @@ class Message(Base):
     num_segments = db.Column(db.Integer, nullable=True)
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user = db.relationship("User", back_populates="messages")
 
     def __init__(
         self,

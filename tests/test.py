@@ -72,28 +72,28 @@ class TestMessages(FixturesMixin, TwiMLTest):
         response = self.get_message(url='/')
         self.assertTwiML(response)
 
-    # def test_sms(self):
-    #     params = dict(
-    #         ToCountry='US',
-    #         ToState='FL',
-    #         SmsMessageSid='SM01d24ae1a8dede74326bca2ab0986601',
-    #         NumMedia=0,
-    #         ToCity='MIAMI',
-    #         FromZip=None,
-    #         SmsSid='SM01d24ae1a8dede74326bca2ab0986601',
-    #         FromState='CA',
-    #         SmsStatus='received',
-    #         FromCity='',
-    #         Body='testtest',
-    #         FromCountry='US',
-    #         To='+19999999999',
-    #         ToZip=33130,
-    #         NumSegments=1,
-    #         MessageSid='SM01d24ae1a8dede74326bca2ab0986601',
-    #         AccountSid='ACd54f610007bb0fbf352df81d4fdff7dd',
-    #         From='+18888888888',
-    #         ApiVersion='2010-04-01'
-    #     )
+    def test_sms(self):
+        params = dict(
+            ToCountry='US',
+            ToState='FL',
+            SmsMessageSid='SM01d24ae1a8dede74326bca2ab0986601',
+            NumMedia=0,
+            ToCity='MIAMI',
+            FromZip=None,
+            SmsSid='SM01d24ae1a8dede74326bca2ab0986601',
+            FromState='CA',
+            SmsStatus='received',
+            FromCity='',
+            Body='testtest',
+            FromCountry='US',
+            To='+19999999999',
+            ToZip=33130,
+            NumSegments=1,
+            MessageSid='SM01d24ae1a8dede74326bca2ab0986601',
+            AccountSid='ACd54f610007bb0fbf352df81d4fdff7dd',
+            From='+18888888888',
+            ApiVersion='2010-04-01'
+        )
 
-    #     response = self.post_message(url='/inbound', **params)
-    #     self.assertTwiML(response)
+        response = self.post_message(url='/inbound', **params)
+        self.assertTwiML(response)
