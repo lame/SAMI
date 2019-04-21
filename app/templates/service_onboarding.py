@@ -17,6 +17,7 @@ def welcome_1(**kwargs) -> str:
         "or simply ignore this message.",
     ])
 
+
 def welcome_2(**kwargs) -> str:
     """
     Onboarding step 2:

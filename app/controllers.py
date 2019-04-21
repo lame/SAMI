@@ -8,6 +8,7 @@ from app import db
 from app.adapters import MessageRequest
 from app.models import Message, User, UserState
 from app.templates import service_onboarding
+from app.templates import chat_flow
 from app.templates.failure import failure_message
 
 # from twilio.twiml import Response as TwiMLResponse
@@ -71,12 +72,23 @@ class InboundMessage(BaseMessage):
         {'template': 'welcome_5', 'model_value': None, 'next': {'all': -1}},
     ]
 
+    chat_steps = [
+        {'template': 'entry', 'model_value': None, 'next': {'1': 1, '2': 2, '3': 3}},
+        {'template': 'resources_1', 'model_value': None, 'next': {'all': -1}},
+        {'template': 'resources_shelters_1', 'model_value': None, 'next': {'all': -1}},
+        {'template': 'resources_bathrooms_1', 'model_value': None, 'next': {'all': -1}},
+    ]
+
     def post(self):
         try:
             user, message = self.parse_message(self.request())
-            if not user.onboarding_completed:
-                saved_state = user.saved_state[-1] or UserState()
 
+            from nose.tools import set_trace
+            user.onboarding_completed = True
+            set_trace()
+
+            saved_state = user.saved_state[-1] or UserState()
+            if not user.onboarding_completed:
                 # Set current question state
                 if saved_state.last_question is None:
                     saved_state.last_question = 0
@@ -93,27 +105,45 @@ class InboundMessage(BaseMessage):
                 # Did the user complete signup?
                 if next_question == -1:
                     user.onboarding_completed = True
+                    user.saved_state.next_question = None
 
                 # Set the "last" question for the next state run
                 saved_state.last_question = next_question
-                user.saved_state.append(saved_state)
-                response = getattr(service_onboarding, self.onboarding_steps[next_question]['template'])(
+                saved_state.message = getattr(service_onboarding, self.onboarding_steps[next_question]['template'])(
                     **user.__dict__
                 )
+                user.saved_state.append(saved_state)
+                response = saved_state.message
+
             else:
-                response = 'foo'
-                logger.info(
-                    f'''
-                    Message {message.sms_message_sid}
-                    sent at {str(datetime.now())}
-                    '''
+                # Init question flow
+                if saved_state.last_question is None or saved_state.last_question == -1:
+                    saved_state.last_question = 0
+
+                # Set the "next" question for the next state run
+                next_question_tree = self.chat_steps[saved_state.last_question]['next']
+                next_question = next_question_tree.get('all') or next_question_tree.get(message.body) or 0
+
+                # Set the "last" question for the next state run
+                saved_state.last_question = next_question
+                saved_state.message = getattr(service_onboarding, self.onboarding_steps[next_question]['template'])(
+                    **user.__dict__
                 )
+                user.saved_state.append(saved_state)
+                response = saved_state.message
+
+            logger.info(
+                f'''
+                Message {message.sms_message_sid}
+                sent at {str(datetime.now())}
+                '''
+            )
 
             db.session.add(user)
-            db.session.add(message)
             db.session.commit()
 
             return Response(response, status=200, mimetype='text/plain; charset=utf-8')
+
         except Exception as e:
             logger.error(e)
             return Response(
