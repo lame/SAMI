@@ -26,14 +26,14 @@ def welcome_2() -> str:
         Give link to the website
     """
     return '''
-    Thanks for joining TextHomelessHelp. Text the word "therapist"
-    to open a chat with a therapist and text "resources" for a list
+    Thanks for joining TextHomelessHelp. Text the word "friend"
+    to open a chat with a friend and text "resources" for a list
     of local outreach and resources that can help you out. For this
     to work please answer the following questions with the most
     accurate information you can to receive help in your area.
 
     Let's start with your name. Please respons with your first name
-    and last name separated by a whitespace.
+    or a nickname you'd like us to call you.
     '''
 
 
@@ -59,6 +59,7 @@ def welcome_4() -> str:
     code of the area you're in.
     '''
 
+
 def welcome_5(fname: str, county: str) -> str:
     """
     Onboarding step 5:
@@ -73,7 +74,7 @@ def welcome_5(fname: str, county: str) -> str:
     """
     return f'''
     {fname} you're all done with signup! Just as a reminder you can
-    text this number with "therapist" at any time to connect with a
+    text this number with "friend" at any time to connect with a
     mental health professional, or "resources" to get a list of
     nearby showers, water, electricity, shelters, and outreach in
     your area. Text "help" if you need to retrieve the available

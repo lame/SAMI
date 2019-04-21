@@ -1,10 +1,6 @@
 from app import api
-from app.mod_sms.controllers import (
-    Test,
-    InboundMessage,
-    FailedMessage
-)
+from app.controllers import HealthCheck, InboundMessage, FailedMessage
 
-api.add_resource(Test, '/')
+api.add_resource(HealthCheck, '/')
 api.add_resource(InboundMessage, '/inbound')
 api.add_resource(FailedMessage, '/failed_message')

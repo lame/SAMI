@@ -12,11 +12,11 @@ DATABASE_QUERY_TIMEOUT = 0.5
 SQLALCHEMY_MIGRATE_REPO = os.path.join(BASEDIR, 'db_repository')
 SQLALCHEMY_RECORD_QUERIES = True
 SQLALCHEMY_TRACK_MODIFICATIONS = False
-SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
+SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URI']
 
 # TWILIO Config
 try:
-    TWILIO_ACCOUNT_SID=os.environ['TWILIO_ACCOUNT_SID']
-    TWILIO_ACCOUNT_AUTH=os.environ['TWILIO_ACCOUNT_AUTH']
+    TWILIO_ACCOUNT_SID = os.environ['TWILIO_ACCOUNT_SID']
+    TWILIO_ACCOUNT_AUTH = os.environ['TWILIO_ACCOUNT_AUTH']
 except KeyError:
-    raise('Missing Twilio environ variables')
+    raise ('Missing Twilio environ variables')
