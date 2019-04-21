@@ -19,8 +19,10 @@ Flask-Migrate==2.4.0
 Flask-RESTful==0.3.7
 Flask-Script==2.0.6
 Flask-SQLAlchemy==2.3.2
+gevent==1.4.0
 gitdb2==2.0.5
 GitPython==2.1.11
+greenlet==0.4.15
 gunicorn==19.9.0
 idna==2.8
 ipdb==0.12
