@@ -80,11 +80,6 @@ class InboundMessage(BaseMessage):
 
             if not user.onboarding_completed:
                 saved_state = user.saved_state[:-1] or UserState()
-
-                from nose.tools import set_trace
-
-                set_trace()
-
                 if saved_state.last_question is None:
                     saved_state.last_question = 0
                     current_question = 0
