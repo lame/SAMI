@@ -51,19 +51,8 @@ class BaseMessage(Resource, MessageRequest):
 
         # Find or create user
         user = (
-            db.session.query(User)
-            .filter_by(phone_number=parsed_request.from_number)
-            .filter_by(active=True)
-            .first()
-        ) or (
-            User(
-                alias=None,
-                age=None,
-                phone_number=message.from_number,
-                lat=None,
-                lng=None,
-            )
-        )
+            db.session.query(User).filter_by(phone_number=parsed_request.from_number).filter_by(active=True).first()
+        ) or (User(alias=None, age=None, phone_number=message.from_number, lat=None, lng=None))
         user.messages.append(message)
 
         return user, message
@@ -74,38 +63,49 @@ class InboundMessage(BaseMessage):
     docstring for InboundMessage
     """
 
+    onboarding_steps = [
+        {'template': 'welcome_1', 'response_field': None, 'next': {'JOIN': 1, 'Join': 1, 'join': 1}},
+        {'template': 'welcome_2', 'response_field': 'alias', 'next': {'all': 2}},
+        {'template': 'welcome_3', 'response_field': 'age', 'next': {'all': 3}},
+        {'template': 'welcome_4', 'response_field': 'postal_code', 'next': {'all': 4}},
+        {'template': 'welcome_5', 'response_field': None, 'next': {'all': None}},
+    ]
+
+
+
     def post(self):
         try:
             user, message = self.parse_message(self.request())
             # FIXME: Need to add the sending logic here
 
             if not user.onboarding_completed:
-                onboarding_steps = [
-                    'welcome_1',
-                    'welcome_2',
-                    'welcome_3',
-                    'welcome_4',
-                    'welcome_5'
-                ]
-
                 saved_state = user.saved_state[:-1] or UserState()
+
+                from nose.tools import set_trace
+
+                set_trace()
+
                 if saved_state.last_question is None:
                     saved_state.last_question = 0
                     current_question = 0
                 else:
+                    response_field = self.onboarding_steps[saved_state.last_question]['response_field']
+                    if response_field:
+                        setattr(user, response_field, message.body)
                     current_question = saved_state.last_question + 1
 
                 # FIXE: Need to put the tree choice here
-                saved_state.next_question = current_question + 1
+                next_question = self.onboarding_steps[current_question + 1]['next'].get('all') or self.onboarding_steps[
+                    current_question + 1
+                ]['next'].get(message.body)
+                if next_question:
+                    saved_state.next_question = next_question
+                else:
+                    user.onboarding_completed = True
 
                 user.saved_state.append(saved_state)
 
-                response = (
-                    getattr(
-                        service_onboarding,
-                        onboarding_steps[0]
-                    )(**user.__dict__)
-                )
+                response = getattr(service_onboarding, self.onboarding_steps[0]['template'])(**user.__dict__)
             else:
                 response = 'foo'
                 logger.info(
@@ -119,15 +119,11 @@ class InboundMessage(BaseMessage):
             db.session.add(message)
             db.session.commit()
 
-            return Response(
-                    response, status=200, mimetype='text/plain; charset=utf-8'
-                )
+            return Response(response, status=200, mimetype='text/plain; charset=utf-8')
         except Exception as e:
             logger.error(e)
             return Response(
-                'Server Error, Please try again later, {0}'.format(e),
-                status=500,
-                mimetype='text/plain; charset=utf-8',
+                'Server Error, Please try again later, {0}'.format(e), status=500, mimetype='text/plain; charset=utf-8'
             )
 
         return Response(status=204, mimetype='text/plain; charset=utf-8')
@@ -148,6 +144,4 @@ class FailedMessage(BaseMessage):
     """
 
     def get(self):
-        return Response(
-            failure_message(), status=200, mimetype='text/plain; charset=utf-8'
-        )
+        return Response(failure_message(), status=200, mimetype='text/plain; charset=utf-8')

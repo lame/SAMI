@@ -56,7 +56,7 @@ def welcome_4(**kwargs) -> str:
     """
     return f'''
     Now for us to find assistance and resources near you,
-    please respond with the approximate 5 digit zip
+    please respond with the approximate 5 digit postal
     code of the area you're in.
     '''
 
