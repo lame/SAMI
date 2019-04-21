@@ -75,7 +75,7 @@ class InboundMessage(BaseMessage):
         try:
             user, message = self.parse_message(self.request())
             if not user.onboarding_completed:
-                saved_state = user.saved_state[:-1] or UserState()
+                saved_state = user.saved_state[-1] or UserState()
 
                 # Set current question state
                 if saved_state.last_question is None:
