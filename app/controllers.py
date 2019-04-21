@@ -64,43 +64,42 @@ class InboundMessage(BaseMessage):
     """
 
     onboarding_steps = [
-        {'template': 'welcome_1', 'response_field': None, 'next': {'JOIN': 1, 'Join': 1, 'join': 1}},
-        {'template': 'welcome_2', 'response_field': 'alias', 'next': {'all': 2}},
-        {'template': 'welcome_3', 'response_field': 'age', 'next': {'all': 3}},
-        {'template': 'welcome_4', 'response_field': 'postal_code', 'next': {'all': 4}},
-        {'template': 'welcome_5', 'response_field': None, 'next': {'all': None}},
+        {'template': 'welcome_1', 'model_value': None, 'next': {'JOIN': 1, 'Join': 1, 'join': 1}},
+        {'template': 'welcome_2', 'model_value': 'alias', 'next': {'all': 2}},
+        {'template': 'welcome_3', 'model_value': 'age', 'next': {'all': 3}},
+        {'template': 'welcome_4', 'model_value': 'postal_code', 'next': {'all': 4}},
+        {'template': 'welcome_5', 'model_value': None, 'next': {'all': None}},
     ]
-
-
 
     def post(self):
         try:
             user, message = self.parse_message(self.request())
-            # FIXME: Need to add the sending logic here
-
             if not user.onboarding_completed:
                 saved_state = user.saved_state[:-1] or UserState()
+
+                # Set current question state
                 if saved_state.last_question is None:
                     saved_state.last_question = 0
-                    current_question = 0
                 else:
-                    response_field = self.onboarding_steps[saved_state.last_question]['response_field']
-                    if response_field:
-                        setattr(user, response_field, message.body)
-                    current_question = saved_state.last_question + 1
+                    # Pull the model value from the response
+                    model_value = self.onboarding_steps[saved_state.last_question]['model_value']
+                    if model_value:
+                        setattr(user, model_value, message.body)
 
-                # FIXE: Need to put the tree choice here
-                next_question = self.onboarding_steps[current_question + 1]['next'].get('all') or self.onboarding_steps[
-                    current_question + 1
-                ]['next'].get(message.body)
-                if next_question:
-                    saved_state.next_question = next_question
-                else:
+                # Set the "next" question for the next state run
+                next_question_tree = self.onboarding_steps[saved_state.last_question]['next']
+                next_question = next_question_tree.get('all') or next_question_tree.get(message.body) or 0
+
+                # Set the "last" question for the next state run
+                saved_state.last_question = next_question
+
+                # Did the user complete signup?
+                if not next_question:
                     user.onboarding_completed = True
 
+                # saved_state.next_question = next_question
                 user.saved_state.append(saved_state)
-
-                response = getattr(service_onboarding, self.onboarding_steps[0]['template'])(**user.__dict__)
+                response = getattr(service_onboarding, self.onboarding_steps[next_question]['template'])(**user.__dict__)
             else:
                 response = 'foo'
                 logger.info(

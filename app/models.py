@@ -133,6 +133,7 @@ class UserState(Base):
     __tablename__ = 'user_states'
 
     last_question = db.Column(db.Integer)
+    # FIXME: Not going to use next_question
     next_question = db.Column(db.Integer)
     message_body = db.Column(db.String)
 

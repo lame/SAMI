@@ -6,17 +6,16 @@ def welcome_1(**kwargs) -> str:
         approval to open an account in their phone
         number.
     """
-    return '''Welcome to TextHomelessHelp! TextHomelessHelp is a
-    messaging service to connect you to resources for the homeless
-    population. TextHomelessHelp is a free service; it is
-    free to start, free to use, and will provide mental health
-    resources and living resources available in your area.
-
-    If you would like to join, please respond "JOIN" for more
-    information, respond "OUT" to opt out of all future invitations,
-    or simply ignore this message.
-    '''
-
+    return ' '.join([
+        "Welcome to TextHomelessHelp! TextHomelessHelp is a",
+        "messaging service to connect you to resources for the homeless",
+        "population. TextHomelessHelp is a free service; it is",
+        "free to start, free to use, and will provide mental health",
+        "resources and living resources available in your area.",
+        "If you would like to join, please respond 'JOIN' for more",
+        "information, respond 'OUT' to opt out of all future invitations,",
+        "or simply ignore this message.",
+    ])
 
 def welcome_2(**kwargs) -> str:
     """
@@ -25,16 +24,15 @@ def welcome_2(**kwargs) -> str:
         'Help' as well as other common keywords.
         Give link to the website
     """
-    return '''
-    Thanks for joining TextHomelessHelp. Text the word "friend"
-    to open a chat with a friend and text "resources" for a list
-    of local outreach and resources that can help you out. For this
-    to work please answer the following questions with the most
-    accurate information you can to receive help in your area.
-
-    Let's start with your name. Please respons with your first name
-    or a nickname you'd like us to call you.
-    '''
+    return ' '.join([
+        "Thanks for joining TextHomelessHelp. Text the word 'friend'",
+        "to open a chat with a friend and text 'resources' for a list",
+        "of local outreach and resources that can help you out. For this",
+        "to work please answer the following questions with the most",
+        "accurate information you can to receive help in your area."
+        "Let's start with your name. Please respons with your first name"
+        "or a nickname you'd like us to call you."
+    ])
 
 
 def welcome_3(**kwargs) -> str:
@@ -42,11 +40,11 @@ def welcome_3(**kwargs) -> str:
     Onboarding step 3:
         Echo the name, get age
     """
-    return f'''
-    Hi {kwargs.get('alias')}, we're happy you joined
-    TextHomelessHelp! To best assist you, please
-    provide us with your current age.
-    '''
+    return ' '.join([
+        f"Hi {kwargs.get('alias')}, we're happy you joined",
+        "TextHomelessHelp! To best assist you, please",
+        "provide us with your current age.",
+    ])
 
 
 def welcome_4(**kwargs) -> str:
@@ -54,11 +52,11 @@ def welcome_4(**kwargs) -> str:
     Onboarding step 4:
         We have their age, let's get their location
     """
-    return f'''
-    Now for us to find assistance and resources near you,
-    please respond with the approximate 5 digit postal
-    code of the area you're in.
-    '''
+    return ' '.join([
+        "Now for us to find assistance and resources near you,",
+        "please respond with the approximate 5 digit postal",
+        "code of the area you're in.",
+    ])
 
 
 def welcome_5(**kwargs) -> str:
@@ -73,11 +71,11 @@ def welcome_5(**kwargs) -> str:
     FIXME:  Come up with better verbage to avoid
             "mental health professional"
     """
-    return f'''
-    {kwargs.get('alias')} you're all done with signup! Just as a
-    reminder you can text this number with "friend" at any time
-    to connect with a mental health professional, or "resources"
-    to get a list of nearby showers, water, electricity, shelters,
-    and outreach in your area. Text "help" if you need to retrieve
-    the available functionality of TextHomelessHelp at any time.
-    '''
+    return ' '.join([
+        f"{kwargs.get('alias')} you're all done with signup! Just as a",
+        "reminder you can text this number with 'friend' at any time",
+        "to connect with a mental health professional, or 'resources'",
+        "to get a list of nearby showers, water, electricity, shelters,",
+        "and outreach in your area. Text 'help' if you need to retrieve",
+        "the available functionality of TextHomelessHelp at any time.",
+    ])
